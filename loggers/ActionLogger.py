@@ -1,3 +1,6 @@
+import csv
+import os
+
 from matrx.logger.logger import GridWorldLogger
 from matrx.grid_world import GridWorld
 
@@ -18,5 +21,20 @@ class ActionLogger(GridWorldLogger):
         for agent_id, agent_body in grid_world.registered_agents.items():
             log_data[agent_id + '_action'] = agent_body.current_action
             log_data[agent_id + '_location'] = agent_body.location
+
+        possible_attributes = [
+            "competency_rescue_severelyInjured",
+            "competency_rescue_mildlyInjured",
+            "competency_arrival",
+            "willingness_search",
+            "willingness_response",
+            "willingness_rescue"
+        ]
+
+        with open(os.getcwd() + '/beliefs/currentTrustBelief.csv') as csvfile:
+            reader = csv.DictReader(csvfile, delimiter=';', quotechar="'")
+            for row in reader:
+                if any(row):
+                    log_data.update(row)
                 
         return log_data
